@@ -1,110 +1,93 @@
 import { Link, useLocation } from "wouter";
 import { useGetBotInfo, useHealthCheck } from "@workspace/api-client-react";
-import { Activity, MessageSquare, Send, Bot, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Activity, MessageSquare, Send, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const navigation = [
+  { name: "Dashboard", href: "/", icon: Activity },
+  { name: "Messages", href: "/messages", icon: MessageSquare },
+  { name: "Send", href: "/send", icon: Send },
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { data: botInfo } = useGetBotInfo();
-  const { data: health } = useHealthCheck();
-
-  const isHealthy = health?.status === "ok";
-
-  const navigation = [
-    { name: "Dashboard", href: "/", icon: Activity },
-    { name: "Messages", href: "/messages", icon: MessageSquare },
-    { name: "Send", href: "/send", icon: Send },
-  ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar */}
-      <div className="w-64 flex-shrink-0 border-r bg-card flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b">
-          <Bot className="h-6 w-6 text-primary mr-3" />
-          <span className="font-bold text-lg tracking-tight">TeleMon</span>
+    <div className="flex flex-col h-screen bg-background overflow-hidden">
+      {/* Top Header */}
+      <header className="flex-shrink-0 border-b bg-card px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="bg-primary/10 p-1.5 rounded-lg">
+            <Bot className="h-5 w-5 text-primary" />
+          </div>
+          <span className="font-bold text-base tracking-tight text-foreground">TeleMon</span>
         </div>
-        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {navigation.map((item) => {
-            const isActive = location === item.href;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                )}
-              >
-                <item.icon
-                  className={cn(
-                    "mr-3 h-5 w-5",
-                    isActive ? "text-primary" : "text-muted-foreground"
-                  )}
-                />
-                {item.name}
-              </Link>
-            );
-          })}
-        </div>
-        
-        <div className="p-4 border-t mt-auto">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              {isHealthy ? (
-                <ShieldCheck className="h-8 w-8 text-green-500" />
-              ) : (
-                <ShieldAlert className="h-8 w-8 text-destructive" />
+
+        {botInfo && (
+          <div className="flex items-center gap-2">
+            <div className="text-right">
+              <p className="text-xs font-semibold text-foreground leading-none">{botInfo.firstName}</p>
+              <p className="text-[11px] text-muted-foreground leading-none mt-0.5">@{botInfo.username}</p>
+            </div>
+            <div
+              className={cn(
+                "flex items-center gap-1.5 px-2 py-1 rounded-full text-[11px] font-medium border",
+                botInfo.isOnline
+                  ? "bg-green-500/10 text-green-600 border-green-500/20"
+                  : "bg-destructive/10 text-destructive border-destructive/20"
               )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">
-                System Status
-              </p>
-              <p className="text-xs text-muted-foreground truncate">
-                {isHealthy ? "All systems operational" : "System degraded"}
-              </p>
+              data-testid="status-bot-online"
+            >
+              <div
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  botInfo.isOnline ? "bg-green-500" : "bg-destructive"
+                )}
+              />
+              {botInfo.isOnline ? "Online" : "Offline"}
             </div>
           </div>
+        )}
+      </header>
+
+      {/* Page content — scrollable, padded for bottom nav */}
+      <main className="flex-1 overflow-y-auto bg-background pb-20">
+        <div className="px-4 py-4">
+          {children}
         </div>
-      </div>
+      </main>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Topbar */}
-        <header className="h-16 border-b bg-card flex items-center justify-between px-6">
-          <div className="flex items-center">
-            {botInfo && (
-              <div className="flex items-center space-x-3">
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold">{botInfo.firstName}</span>
-                  <span className="text-xs text-muted-foreground">@{botInfo.username}</span>
-                </div>
-                <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-accent/50 border">
-                  <div
-                    className={cn(
-                      "h-2 w-2 rounded-full",
-                      botInfo.isOnline ? "bg-green-500" : "bg-destructive"
-                    )}
-                  />
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {botInfo.isOnline ? "Online" : "Offline"}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-        </header>
-
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-background p-6">
-          <div className="max-w-6xl mx-auto">
-            {children}
-          </div>
-        </main>
-      </div>
+      {/* Bottom Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t flex items-stretch h-16 safe-area-pb">
+        {navigation.map((item) => {
+          const isActive = location === item.href;
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                "flex-1 flex flex-col items-center justify-center gap-1 transition-colors",
+                isActive
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+              data-testid={`nav-${item.name.toLowerCase()}`}
+            >
+              <item.icon
+                className={cn(
+                  "h-5 w-5 transition-transform",
+                  isActive && "scale-110"
+                )}
+              />
+              <span className="text-[11px] font-medium">{item.name}</span>
+              {isActive && (
+                <span className="absolute bottom-0 h-0.5 w-10 bg-primary rounded-t-full" />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
