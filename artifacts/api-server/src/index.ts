@@ -24,9 +24,17 @@ app.listen(port, (err) => {
 
   logger.info({ port }, "Server listening");
 
-  if (process.env.TELEGRAM_BOT_TOKEN) {
-    startPolling(5000);
+  if (!process.env.TELEGRAM_BOT_TOKEN) {
+    logger.warn("TELEGRAM_BOT_TOKEN not set, bot disabled");
+    return;
+  }
+
+  if (process.env.USE_WEBHOOK === "true") {
+    logger.info(
+      "Webhook mode enabled — set your webhook URL via:\n" +
+      `https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://<your-domain>/api/webhook`,
+    );
   } else {
-    logger.warn("TELEGRAM_BOT_TOKEN not set, polling disabled");
+    startPolling(5000);
   }
 });
