@@ -1,5 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { startPolling } from "./lib/poller";
 
 const rawPort = process.env["PORT"];
 
@@ -22,4 +23,10 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
+
+  if (process.env.TELEGRAM_BOT_TOKEN) {
+    startPolling(5000);
+  } else {
+    logger.warn("TELEGRAM_BOT_TOKEN not set, polling disabled");
+  }
 });

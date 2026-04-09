@@ -3,13 +3,19 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Telegram Bot Monitor API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: bot
+    description: Telegram bot operations
+  - name: messages
+    description: Message operations
+  - name: dashboard
+    description: Dashboard statistics
 paths:
   /healthz:
     get:
@@ -24,6 +30,153 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /bot/info:
+    get:
+      operationId: getBotInfo
+      tags: [bot]
+      summary: Get bot information
+      description: Returns Telegram bot profile and status
+      responses:
+        "200":
+          description: Bot info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BotInfo"
+  /bot/updates:
+    get:
+      operationId: getBotUpdates
+      tags: [bot]
+      summary: Get recent bot updates
+      description: Returns recent updates/messages received by the bot
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of updates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateList"
+  /messages:
+    get:
+      operationId: getMessages
+      tags: [messages]
+      summary: Get stored messages
+      description: Returns paginated stored messages
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: chatId
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Paginated messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageList"
+  /messages/send:
+    post:
+      operationId: sendMessage
+      tags: [messages]
+      summary: Send a message via the bot
+      description: Sends a message to a specific chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendMessageBody"
+      responses:
+        "200":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendMessageResponse"
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      description: Returns summary stats for the bot
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+  /dashboard/activity:
+    get:
+      operationId: getActivity
+      tags: [dashboard]
+      summary: Get recent activity timeline
+      description: Returns recent activity events
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Activity list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityList"
+  /dashboard/chats:
+    get:
+      operationId: getChats
+      tags: [dashboard]
+      summary: Get chat list
+      description: Returns list of chats the bot is part of
+      responses:
+        "200":
+          description: Chat list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatList"
+  /dashboard/message-counts:
+    get:
+      operationId: getMessageCounts
+      tags: [dashboard]
+      summary: Get message counts by day
+      description: Returns message counts grouped by day for charting
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 7
+      responses:
+        "200":
+          description: Message counts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageCountList"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +186,238 @@ components:
           type: string
       required:
         - status
-
+    BotInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        isBot:
+          type: boolean
+        firstName:
+          type: string
+        username:
+          type: string
+        canJoinGroups:
+          type: boolean
+        canReadAllGroupMessages:
+          type: boolean
+        supportsInlineQueries:
+          type: boolean
+        isOnline:
+          type: boolean
+      required:
+        - id
+        - isBot
+        - firstName
+        - username
+        - isOnline
+    TelegramUpdate:
+      type: object
+      properties:
+        updateId:
+          type: integer
+        messageId:
+          type: integer
+        date:
+          type: integer
+        chatId:
+          type: integer
+        chatTitle:
+          type: string
+        chatType:
+          type: string
+        fromId:
+          type: integer
+        fromName:
+          type: string
+        fromUsername:
+          type: string
+        text:
+          type: string
+        type:
+          type: string
+      required:
+        - updateId
+        - date
+        - type
+    UpdateList:
+      type: object
+      properties:
+        updates:
+          type: array
+          items:
+            $ref: "#/components/schemas/TelegramUpdate"
+        total:
+          type: integer
+      required:
+        - updates
+        - total
+    StoredMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        updateId:
+          type: integer
+        messageId:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        chatId:
+          type: string
+        chatTitle:
+          type: string
+        chatType:
+          type: string
+        fromId:
+          type: string
+        fromName:
+          type: string
+        fromUsername:
+          type: string
+        text:
+          type: string
+        messageType:
+          type: string
+        rawData:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - date
+        - chatId
+        - chatType
+        - messageType
+        - createdAt
+    MessageList:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/StoredMessage"
+        total:
+          type: integer
+      required:
+        - messages
+        - total
+    SendMessageBody:
+      type: object
+      properties:
+        chatId:
+          type: string
+        text:
+          type: string
+      required:
+        - chatId
+        - text
+    SendMessageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        messageId:
+          type: integer
+      required:
+        - success
+    DashboardStats:
+      type: object
+      properties:
+        totalMessages:
+          type: integer
+        totalChats:
+          type: integer
+        totalUsers:
+          type: integer
+        todayMessages:
+          type: integer
+        botStatus:
+          type: string
+        lastUpdateTime:
+          type: string
+          format: date-time
+      required:
+        - totalMessages
+        - totalChats
+        - totalUsers
+        - todayMessages
+        - botStatus
+    ActivityEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        description:
+          type: string
+        chatTitle:
+          type: string
+        fromName:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - id
+        - type
+        - description
+        - timestamp
+    ActivityList:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityEvent"
+      required:
+        - activities
+    ChatInfo:
+      type: object
+      properties:
+        chatId:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        messageCount:
+          type: integer
+        lastMessageAt:
+          type: string
+          format: date-time
+      required:
+        - chatId
+        - type
+        - messageCount
+    ChatList:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatInfo"
+      required:
+        - chats
+    MessageCount:
+      type: object
+      properties:
+        date:
+          type: string
+        count:
+          type: integer
+      required:
+        - date
+        - count
+    MessageCountList:
+      type: object
+      properties:
+        counts:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageCount"
+      required:
+        - counts
