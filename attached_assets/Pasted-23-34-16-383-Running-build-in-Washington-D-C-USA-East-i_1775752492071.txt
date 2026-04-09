@@ -1,0 +1,53 @@
+23:34:16.383 Running build in Washington, D.C., USA (East) – iad1
+23:34:16.384 Build machine configuration: 2 cores, 8 GB
+23:34:16.571 Cloning github.com/limsovannrady/Telegram-Monitor (Branch: main, Commit: 80bfab5)
+23:34:16.572 Previous build caches not available.
+23:34:16.925 Cloning completed: 354.000ms
+23:34:18.617 Running "vercel build"
+23:34:19.282 Vercel CLI 50.42.0
+23:34:19.485 WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+23:34:20.037 > Detected ENABLE_EXPERIMENTAL_COREPACK=1 and "pnpm@10.26.1" in package.json
+23:34:20.480 Installing dependencies...
+23:34:20.544 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.26.1.tgz
+23:34:21.760 Scope: all 9 workspace projects
+23:34:21.907 ../..                                    | Progress: resolved 1, reused 0, downloaded 0, added 0
+23:34:21.979 ../..                                    | +492 ++++++++++++++++++++++++++++++++
+23:34:22.913 ../..                                    | Progress: resolved 492, reused 0, downloaded 104, added 71
+23:34:23.913 ../..                                    | Progress: resolved 492, reused 0, downloaded 225, added 164
+23:34:24.921 ../..                                    | Progress: resolved 492, reused 0, downloaded 285, added 190
+23:34:25.923 ../..                                    | Progress: resolved 492, reused 0, downloaded 292, added 194
+23:34:26.923 ../..                                    | Progress: resolved 492, reused 0, downloaded 355, added 218
+23:34:27.930 ../..                                    | Progress: resolved 492, reused 0, downloaded 385, added 229
+23:34:28.929 ../..                                    | Progress: resolved 492, reused 0, downloaded 459, added 258
+23:34:29.930 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 288
+23:34:30.931 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 297
+23:34:31.933 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 378
+23:34:32.766 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 492, done
+23:34:33.002 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+23:34:33.069 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+23:34:34.204 
+23:34:34.204 dependencies:
+23:34:34.204 + @workspace/api-zod 0.0.0 <- ../../lib/api-zod
+23:34:34.204 + cookie-parser 1.4.7
+23:34:34.204 + cors 2.8.6
+23:34:34.204 + express 5.2.1
+23:34:34.205 + node-fetch 3.3.2
+23:34:34.205 + pino 9.14.0
+23:34:34.205 + pino-http 10.5.0
+23:34:34.205 
+23:34:34.205 devDependencies:
+23:34:34.205 + @types/cookie-parser 1.4.10
+23:34:34.205 + @types/cors 2.8.19
+23:34:34.205 + @types/express 5.0.6
+23:34:34.205 + @types/node 25.3.5
+23:34:34.206 + esbuild 0.27.3
+23:34:34.206 + esbuild-plugin-pino 2.3.3
+23:34:34.206 + pino-pretty 13.1.3
+23:34:34.206 + thread-stream 3.1.0
+23:34:34.206 
+23:34:34.270 ../.. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+23:34:34.303 ../.. preinstall: Done
+23:34:34.434 Done in 13s using pnpm v10.26.1
+23:34:34.672 Using TypeScript 5.9.3 (local user-provided)
+23:34:36.037 Error: api/index.ts(1,17): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/app.js'?
+23:34:36.037 
