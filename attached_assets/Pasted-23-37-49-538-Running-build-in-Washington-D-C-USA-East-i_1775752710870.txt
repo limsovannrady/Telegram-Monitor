@@ -1,0 +1,53 @@
+23:37:49.538 Running build in Washington, D.C., USA (East) – iad1
+23:37:49.539 Build machine configuration: 2 cores, 8 GB
+23:37:49.659 Cloning github.com/limsovannrady/Telegram-Monitor (Branch: main, Commit: 8ca5cd9)
+23:37:49.660 Previous build caches not available.
+23:37:49.873 Cloning completed: 214.000ms
+23:37:50.430 Running "vercel build"
+23:37:51.123 Vercel CLI 50.42.0
+23:37:51.246 WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+23:37:51.738 > Detected ENABLE_EXPERIMENTAL_COREPACK=1 and "pnpm@10.26.1" in package.json
+23:37:52.052 Installing dependencies...
+23:37:52.132 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.26.1.tgz
+23:37:53.396 Scope: all 9 workspace projects
+23:37:53.549 ../..                                    | Progress: resolved 1, reused 0, downloaded 0, added 0
+23:37:53.627 ../..                                    | +492 ++++++++++++++++++++++++++++++++
+23:37:54.553 ../..                                    | Progress: resolved 492, reused 0, downloaded 110, added 60
+23:37:55.554 ../..                                    | Progress: resolved 492, reused 0, downloaded 221, added 128
+23:37:56.569 ../..                                    | Progress: resolved 492, reused 0, downloaded 270, added 152
+23:37:57.571 ../..                                    | Progress: resolved 492, reused 0, downloaded 292, added 160
+23:37:58.571 ../..                                    | Progress: resolved 492, reused 0, downloaded 351, added 190
+23:37:59.573 ../..                                    | Progress: resolved 492, reused 0, downloaded 373, added 198
+23:38:00.574 ../..                                    | Progress: resolved 492, reused 0, downloaded 449, added 233
+23:38:01.576 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 269
+23:38:02.577 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 292
+23:38:03.578 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 337
+23:38:04.578 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 449
+23:38:04.997 ../..                                    | Progress: resolved 492, reused 0, downloaded 492, added 492, done
+23:38:05.246 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+23:38:05.321 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+23:38:05.686 
+23:38:05.686 dependencies:
+23:38:05.686 + @workspace/api-zod 0.0.0 <- ../../lib/api-zod
+23:38:05.686 + cookie-parser 1.4.7
+23:38:05.686 + cors 2.8.6
+23:38:05.687 + express 5.2.1
+23:38:05.687 + node-fetch 3.3.2
+23:38:05.687 + pino 9.14.0
+23:38:05.687 + pino-http 10.5.0
+23:38:05.687 
+23:38:05.687 devDependencies:
+23:38:05.687 + @types/cookie-parser 1.4.10
+23:38:05.687 + @types/cors 2.8.19
+23:38:05.687 + @types/express 5.0.6
+23:38:05.688 + @types/node 25.3.5
+23:38:05.688 + esbuild 0.27.3
+23:38:05.688 + esbuild-plugin-pino 2.3.3
+23:38:05.688 + pino-pretty 13.1.3
+23:38:05.689 + thread-stream 3.1.0
+23:38:05.691 
+23:38:05.734 ../.. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+23:38:05.785 ../.. preinstall: Done
+23:38:05.913 Done in 12.9s using pnpm v10.26.1
+23:38:06.164 Using TypeScript 5.9.3 (local user-provided)
+23:38:07.592 Error: api/index.ts: Emit skipped
