@@ -1,5 +1,6 @@
 import { db, messagesTable } from "@workspace/db";
-import { getUpdates, type TelegramUpdate } from "./telegram";
+import { desc, eq } from "drizzle-orm";
+import { getUpdates, sendTelegramMessage, type TelegramUpdate } from "./telegram";
 import { logger } from "./logger";
 
 let lastUpdateId = 0;
@@ -47,6 +48,37 @@ async function pollUpdates(): Promise<void> {
         });
 
         lastUpdateId = Math.max(lastUpdateId, update.update_id);
+
+        // Auto-reply with history only for new messages (not edits/channels) and not from bots
+        if (update.message && !update.message.from?.is_bot) {
+          try {
+            const chatId = String(msg.chat.id);
+            const history = await db
+              .select()
+              .from(messagesTable)
+              .where(eq(messagesTable.chatId, chatId))
+              .orderBy(desc(messagesTable.date))
+              .limit(10);
+
+            const historyLines = history
+              .reverse()
+              .map((m) => {
+                const sender = m.fromName || m.fromUsername || "Unknown";
+                const time = m.date.toLocaleString("km-KH", { timeZone: "Asia/Phnom_Penh" });
+                const content = m.text || `[${m.messageType}]`;
+                return `📌 ${sender} (${time}):\n${content}`;
+              })
+              .join("\n\n");
+
+            const replyText = historyLines
+              ? `📜 ប្រវត្តិសន្ទនា (${history.length} សារ):\n\n${historyLines}`
+              : "📭 មិនមានប្រវត្តិសន្ទនានៅឡើយទេ។";
+
+            await sendTelegramMessage(String(msg.chat.id), replyText);
+          } catch (replyErr) {
+            logger.error({ replyErr }, "Failed to send history auto-reply");
+          }
+        }
       } catch (err) {
         const dbErr = err as { code?: string };
         if (dbErr.code === "23505") {
