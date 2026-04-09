@@ -1,31 +1,16 @@
 import { Router, type IRouter } from "express";
-import { db, messagesTable } from "@workspace/db";
-import { eq, desc, sql, count } from "drizzle-orm";
+import { getMessages } from "../lib/store";
 import { SendMessageBody } from "@workspace/api-zod";
 import { sendTelegramMessage } from "../lib/telegram";
 
 const router: IRouter = Router();
 
-router.get("/messages", async (req, res): Promise<void> => {
+router.get("/messages", (req, res): void => {
   const limit = req.query.limit ? Number(req.query.limit) : 50;
   const offset = req.query.offset ? Number(req.query.offset) : 0;
   const chatId = req.query.chatId as string | undefined;
 
-  const conditions = chatId ? eq(messagesTable.chatId, chatId) : undefined;
-
-  const [messages, totalResult] = await Promise.all([
-    db
-      .select()
-      .from(messagesTable)
-      .where(conditions)
-      .orderBy(desc(messagesTable.date))
-      .limit(limit)
-      .offset(offset),
-    db
-      .select({ count: count() })
-      .from(messagesTable)
-      .where(conditions),
-  ]);
+  const { messages, total } = getMessages({ chatId, limit, offset });
 
   res.json({
     messages: messages.map((m) => ({
@@ -44,7 +29,7 @@ router.get("/messages", async (req, res): Promise<void> => {
       rawData: m.rawData,
       createdAt: m.createdAt.toISOString(),
     })),
-    total: totalResult[0]?.count || 0,
+    total,
   });
 });
 
